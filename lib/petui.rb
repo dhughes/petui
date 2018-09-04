@@ -1,9 +1,12 @@
-require "petui/version"
+# frozen_string_literal: true
+
+require 'petui/version'
+
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+
+Dir[File.expand_path('petui/**/*.rb', __dir__)].each { |f| require f }
 
 module Petui
   class UI
-    def self.do_something
-      puts "this is me doing something!"
-    end
   end
 end
