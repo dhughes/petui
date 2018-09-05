@@ -21,6 +21,8 @@ module Petui
       def render
         IO.console_size
         children.each do |child, position|
+          current_x = nil
+          current_y = nil
           child.render.each do |row|
             current_x = nil
             current_y = current_y ? current_y + 1 : position[:y]
@@ -30,7 +32,7 @@ module Petui
             end
           end
         end
-        buffer.map(&:join).join("\n")
+        buffer.map(&:join).map(&:rstrip).join("\n")
       end
 
       def add_child(child, position)

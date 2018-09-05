@@ -2,7 +2,7 @@
 
 module Petui
   module Component
-    class Text
+    class Label
       attr_accessor :text
 
       def initialize(text)
