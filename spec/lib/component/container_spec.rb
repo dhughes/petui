@@ -28,7 +28,7 @@ RSpec.describe Petui::Component::Container do
       text = Petui::Component::Text.new('test')
       component.add_child(text, x: 1, y: 1)
 
-      code = <<-EXAMPLE.gsub(/^\s+\|/, '')
+      code = <<-EXAMPLE.gsub(/^\s+\|/, '').chomp("\n")
         |
         | test
         |
@@ -40,7 +40,7 @@ RSpec.describe Petui::Component::Container do
         |
         |
       EXAMPLE
-      expect(component.render).to eq(code.chomp("\n"))
+      expect(component.render).to eq(code)
     end
 
     it 'should render multiple children' do
@@ -53,7 +53,7 @@ RSpec.describe Petui::Component::Container do
       component.add_child(Petui::Component::Text.new('test'), x: 3, y: 3)
       component.add_child(Petui::Component::Text.new('test'), x: 4, y: 4)
 
-      code = <<-EXAMPLE.gsub(/^\s+\|/, '')
+      code = <<-EXAMPLE.gsub(/^\s+\|/, '').chomp("\n")
         |test
         | test
         |  test
@@ -65,7 +65,7 @@ RSpec.describe Petui::Component::Container do
         |
         |
       EXAMPLE
-      expect(component.render).to eq(code.chomp("\n"))
+      expect(component.render).to eq(code)
     end
 
     it 'should render different types of children' do
@@ -77,7 +77,7 @@ RSpec.describe Petui::Component::Container do
       component.add_child(box, x: 2, y: 3)
       component.add_child(text, x: 3, y: 4)
 
-      code = <<-EXAMPLE.gsub(/^\s+\|/, '')
+      code = <<-EXAMPLE.gsub(/^\s+\|/, '').chomp("\n")
         |
         |
         |
@@ -89,7 +89,23 @@ RSpec.describe Petui::Component::Container do
         |
         |
       EXAMPLE
-      expect(component.render).to eq(code.chomp("\n"))
+      expect(component.render).to eq(code)
+    end
+
+    it 'truncates overflow' do
+      IO = class_double('IO').as_stubbed_const(transfer_nested_constants: true)
+      expect(IO).to receive(:console_size).and_return([4, 4]).at_least(:once)
+      component = Petui::Component::Container.new
+      text = Petui::Component::Text.new("Hello\nWorld\nIt is a\nNice Day\nToday")
+      component.add_child(text, x: 0, y: 0)
+
+      output = <<-OUTPUT.gsub(/^\s+\|/, '').chomp("\n")
+        |Hell
+        |Worl
+        |It i
+        |Nice
+      OUTPUT
+      expect(component.render).to eq(output)
     end
   end
 end

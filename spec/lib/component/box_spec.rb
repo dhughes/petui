@@ -42,6 +42,25 @@ RSpec.describe Petui::Component::Box do
       OUTPUT
       expect(box.render).to eq(output)
     end
+
+    it 'can contain a box in a box' do
+      IO = class_double('IO').as_stubbed_const(transfer_nested_constants: true)
+      expect(IO).to receive(:console_size).and_return([12, 5]).at_least(:once)
+      box = Petui::Component::Box.new(width: 12, height: 5)
+      box2 = Petui::Component::Box.new(width: 10, height: 3)
+      box.add_child(box2, x: 0, y: 0)
+      text = Petui::Component::Text.new('Hi')
+      box2.add_child(text, x: 0, y: 0)
+
+      output = <<-OUTPUT.gsub(/^\s+\|/, '').chomp
+        |┌──────────┐
+        |│┌────────┐│
+        |││Hi      ││
+        |│└────────┘│
+        |└──────────┘
+      OUTPUT
+      expect(box.render).to eq(output)
+    end
   end
 
 end

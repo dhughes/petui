@@ -38,8 +38,10 @@ module Petui
 
       def apply_text_at_position(text, position)
         to_matrix(text).each_with_index do |row, y|
+          next if y > buffer.size - 1
           row.each_with_index do |cell, x|
-            buffer[y + position[:y]][x + position[:x]] = cell
+            next if x > buffer[y].size - 1
+            buffer[y + position[:y]][x + position[:x]] = cell || ' '
           end
         end
 
