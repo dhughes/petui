@@ -16,17 +16,29 @@ module Petui
       BOTTOM_RIGHT = '┘'
 
       def initialize(width:, height:)
+        super()
         @width = width
         @height = height
       end
 
-      def render
+      def render(resize = true)
+        resize_buffer if resize
+        apply_text_at_position(border, x: 0, y: 0)
+        super(false)
+        buffer_string
+      end
+
+      def add_child(child, position)
+        super(child, x: position[:x] + 1, y: position[:y] + 1)
+      end
+
+      private
+
+      def border
         "#{top}" \
         "#{middle}" \
         "#{bottom}"
       end
-
-      private
 
       def horizontal_side
         HORIZONTAL * (width - 2)
@@ -37,7 +49,7 @@ module Petui
       end
 
       def middle
-        "#{VERTICAL}#{empty_space}#{VERTICAL}\n" * (width - 2)
+        "#{VERTICAL}#{empty_space}#{VERTICAL}\n" * (height - 2)
       end
 
       def empty_space

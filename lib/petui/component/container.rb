@@ -18,25 +18,36 @@ module Petui
         end
       end
 
-      def render
-        IO.console_size
+      def render(resize = true)
+        resize_buffer if resize
         children.each do |child, position|
-          current_x = nil
-          current_y = nil
-          child.render.each do |row|
-            current_x = nil
-            current_y = current_y ? current_y + 1 : position[:y]
-            row.each do |letter|
-              current_x = current_x ? current_x + 1 : position[:x]
-              buffer[current_y][current_x] = letter
-            end
-          end
+          apply_text_at_position(child.render, position)
         end
-        buffer.map(&:join).map(&:rstrip).join("\n")
+        buffer_string
       end
 
       def add_child(child, position)
         children[child] = position
+      end
+
+      private
+
+      def buffer_string
+        buffer.map(&:join).map(&:rstrip).join("\n")
+      end
+
+      def apply_text_at_position(text, position)
+        to_matrix(text).each_with_index do |row, y|
+          row.each_with_index do |cell, x|
+            buffer[y + position[:y]][x + position[:x]] = cell
+          end
+        end
+
+        buffer
+      end
+
+      def to_matrix(text)
+        text.split("\n").map { |row| row.split('') }
       end
     end
   end

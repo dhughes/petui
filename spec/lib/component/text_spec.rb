@@ -1,8 +1,8 @@
 
-RSpec.describe Petui::Component::Label do
+RSpec.describe Petui::Component::Text do
   describe '#render' do
     it 'renders text' do
-      component = Petui::Component::Label.new('Hello World')
+      component = Petui::Component::Text.new('Hello World')
 
       expect(component.render).to eq('Hello World')
     end
