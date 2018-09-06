@@ -4,7 +4,7 @@ RSpec.describe Petui::Component::Label do
     it 'renders text' do
       component = Petui::Component::Label.new('Hello World')
 
-      expect(component.render).to eq(['Hello World'.split('')])
+      expect(component.render).to eq('Hello World')
     end
   end
 

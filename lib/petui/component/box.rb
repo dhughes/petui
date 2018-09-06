@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'pry-byebug'
+require 'petui/component/container'
 
 module Petui
   module Component
-    class Box
+    class Box < Container
       attr_accessor :width, :height
 
       HORIZONTAL = '─'
@@ -14,26 +15,38 @@ module Petui
       BOTTOM_LEFT = '└'
       BOTTOM_RIGHT = '┘'
 
-
       def initialize(width:, height:)
         @width = width
         @height = height
       end
 
       def render
-        (1..self.height).map do |y|
-          if y == 1
-            [TOP_LEFT] + Array.new((width - 2), HORIZONTAL) + [TOP_RIGHT]
-          elsif y == height
-            [BOTTOM_LEFT] + Array.new((width - 2), HORIZONTAL) + [BOTTOM_RIGHT]
-          else
-            [VERTICAL] + Array.new((width - 2), ' ') + [VERTICAL]
-          end
-        end
+        "#{top}" \
+        "#{middle}" \
+        "#{bottom}"
       end
 
+      private
+
+      def horizontal_side
+        HORIZONTAL * (width - 2)
+      end
+
+      def top
+        "#{TOP_LEFT}#{horizontal_side}#{TOP_RIGHT}\n"
+      end
+
+      def middle
+        "#{VERTICAL}#{empty_space}#{VERTICAL}\n" * (width - 2)
+      end
+
+      def empty_space
+        ' ' * (width - 2)
+      end
+
+      def bottom
+        "#{BOTTOM_LEFT}#{horizontal_side}#{BOTTOM_RIGHT}"
+      end
     end
-
-
   end
 end

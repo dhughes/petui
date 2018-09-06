@@ -10,7 +10,7 @@ module Petui
       end
 
       def render
-        [text.split('')]
+        text
       end
     end
   end
