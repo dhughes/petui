@@ -6,7 +6,7 @@ require 'petui/component/container'
 module Petui
   module Component
     class Box < Container
-      attr_accessor :width, :height
+      attr_accessor :width, :height, :label
 
       HORIZONTAL = '─'
       VERTICAL = '│'
@@ -15,10 +15,11 @@ module Petui
       BOTTOM_LEFT = '└'
       BOTTOM_RIGHT = '┘'
 
-      def initialize(width:, height:)
+      def initialize(width:, height:, label: nil)
         super()
         @width = width
         @height = height
+        @label = label
       end
 
       def render(resize = true)
@@ -40,12 +41,12 @@ module Petui
         "#{bottom}"
       end
 
-      def horizontal_side
-        HORIZONTAL * (width - 2)
+      def horizontal_side(text = '')
+        "#{HORIZONTAL}#{text}#{HORIZONTAL * (width - text&.length.to_i - 3)}"
       end
 
       def top
-        "#{TOP_LEFT}#{horizontal_side}#{TOP_RIGHT}\n"
+        "#{TOP_LEFT}#{horizontal_side(label)}#{TOP_RIGHT}\n"
       end
 
       def middle
