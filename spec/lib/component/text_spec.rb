@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 RSpec.describe Petui::Component::Text do
   describe '#render' do
@@ -7,5 +8,4 @@ RSpec.describe Petui::Component::Text do
       expect(component.render).to eq('Hello World')
     end
   end
-
 end

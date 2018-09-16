@@ -100,5 +100,4 @@ RSpec.describe Petui::Component::Box do
       expect(box.render).to eq(output)
     end
   end
-
 end
