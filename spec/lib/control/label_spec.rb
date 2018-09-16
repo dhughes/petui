@@ -46,6 +46,21 @@ RSpec.describe Petui::Control::Label do
       expect(control.render).to eq('Hello')
     end
 
+    it 'renders in color' do
+      control = Petui::Control::Label.new('Hello')
+      control.color = :blue
+      control.background_color = '#123456'
+
+      expect(control.render).to eq("\e[34;48;5;24mHello\e[0m")
+    end
+
+    it 'renders styles' do
+      control = Petui::Control::Label.new('Hello')
+      control.styles = [:underline, :bold]
+
+      expect(control.render).to eq("\e[4;1mHello\e[0m")
+    end
+
     context 'when string is longer than width' do
       it 'renders text with spaces when text is shorter than the specified width' do
         control = Petui::Control::Label.new('Hello World')

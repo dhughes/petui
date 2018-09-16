@@ -3,6 +3,8 @@
 module Petui
   module Control
     class Label < Control
+      include Styleable
+
       attr_accessor :width, :min_width, :max_width, :align
       attr_reader :text
 
@@ -15,11 +17,12 @@ module Petui
       end
 
       def render
-        if text.length > width
-          render_short
-        else
-          render_long
-        end
+        output = if text.length > width
+                   render_short
+                 else
+                   render_long
+                 end
+        style(output)
       end
 
       private

@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require 'paint'
+
 module Petui
   module Control
     class ProgressBar < Control
+      include Styleable
 
       attr_accessor :width, :progress
 
@@ -12,15 +15,34 @@ module Petui
       end
 
       def render
-        full = '█' * full_blocks
-        blank = ' ' * blank_blocks
-        "#{full}#{partial}#{blank}"
+        output = slices.each_slice(8).map { |block| block.count(1) }.reduce('') do |progress, block|
+          progress + render_block(block)
+        end
+        style(output)
       end
 
       private
 
-      def partial
-        case partial_block
+      def slices
+        Array.new(filled_slices, 1) + Array.new(blank_slices, 0)
+      end
+
+      def total_slices
+        width * 8
+      end
+
+      def filled_slices
+        (total_slices * progress).floor
+      end
+
+      def blank_slices
+        total_slices - filled_slices
+      end
+
+      def render_block(block)
+        case block
+        when 0
+          ' '
         when 1
           '▏'
         when 2
@@ -35,32 +57,9 @@ module Petui
           '▊'
         when 7
           '▉'
+        when 8
+          '█'
         end
-      end
-
-      # 8 slices to a block
-      def full_blocks
-        (full_slices / 8.0).floor
-      end
-
-      def blank_blocks
-        (blank_slices / 8.0).floor
-      end
-
-      def partial_block
-        full_slices % 8
-      end
-
-      def full_slices
-        (total_slices * progress).floor
-      end
-
-      def blank_slices
-        total_slices - full_slices
-      end
-
-      def total_slices
-        width * 8
       end
     end
   end
