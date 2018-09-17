@@ -14,6 +14,13 @@ RSpec.describe Petui::Control::ProgressBar do
     expect(control.minimum_width).to eq(20)
   end
 
+  it 'has a maximum width' do
+    control = Petui::Control::ProgressBar.new
+    control.maximum_width = 20
+
+    expect(control.maximum_width).to eq(20)
+  end
+
   describe '#render' do
     it 'renders at the specified width' do
       control = Petui::Control::ProgressBar.new
@@ -30,36 +37,44 @@ RSpec.describe Petui::Control::ProgressBar do
 
     it 'renders 50% complete' do
       control = Petui::Control::ProgressBar.new
-      control.width = 8
       control.progress = 0.5
 
-      expect(control.render).to eq('████    ')
+      expect(control.render(width: 8)).to eq('████    ')
     end
 
     it 'renders 100% complete' do
       control = Petui::Control::ProgressBar.new
-      control.width = 8
       control.progress = 1
 
-      expect(control.render).to eq('████████')
+      expect(control.render(width: 8)).to eq('████████')
     end
 
     it 'renders fractional completion' do
       control = Petui::Control::ProgressBar.new
-      control.width = 5
       control.progress = 0.585
 
-      expect(control.render).to eq('██▉  ')
+      expect(control.render(width: 5)).to eq('██▉  ')
     end
 
     it 'renders in color' do
       control = Petui::Control::ProgressBar.new
-      control.width = 5
       control.progress = 0.585
       control.color = :red
       control.background_color = 'gold'
 
-      expect(control.render).to eq("\e[31;48;5;226m██▉  \e[0m")
+      expect(control.render(width: 5)).to eq("\e[31;48;5;226m██▉  \e[0m")
+    end
+
+    it 'raises an error if width is less than the minimum' do
+      control = Petui::Control::ProgressBar.new
+
+      expect { control.render(width: 0) }.to raise_error('Width less than minimum.')
+    end
+
+    it 'raises an error if width is greater than the maximum' do
+      control = Petui::Control::ProgressBar.new
+      
+      expect { control.render(width: 21) }.to raise_error('Width greater than maximum.')
     end
   end
 end

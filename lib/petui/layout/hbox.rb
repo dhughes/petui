@@ -4,21 +4,34 @@ module Petui
   module Layout
     class HBox
       attr_accessor :width, :children
+      attr_writer :preferred_width
 
       def initialize
-        @width = 0
+        @preferred_width = nil
+        @maximum_width = nil
         @children = []
       end
 
-      def render
+      def render(width: preferred_width)
         output = children.reduce('') do |output, child|
-          child.width = (child.preferred_width * scale).round
-          output + child.render
+          child_width = (child.preferred_width * scale(width)).round
+          output + child.render(width: child_width)
         end
 
-        output = output + ' ' * (width - output.length) if width - output.length > 0
-        
+        output += ' ' * (width - output.length) if (width - output.length).positive?
+
         output
+      end
+
+      def minimum_width
+        children.reduce(0) do |minimum, child|
+          minimum + child.minimum_width
+        end
+      end
+
+      def preferred_width
+        return minimum_width if @preferred_width.nil? || minimum_width > @preferred_width
+        @preferred_width
       end
 
       private
@@ -35,11 +48,9 @@ module Petui
         end
       end
 
-      def scale
-        total_preferred_width > width ? width / total_preferred_width.to_f : width
+      def scale(width)
+        total_preferred_width > width ? width / total_preferred_width.to_f : 1
       end
-
-
     end
   end
 end

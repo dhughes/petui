@@ -20,36 +20,24 @@ RSpec.describe Petui::Control::Label do
     expect(control.minimum_width).to eq(10)
   end
 
-  it 'has a width' do
-    control = Petui::Control::Label.new('Hello')
-
-    expect(control.width).to eq(5)
-  end
-
-  it 'does not have a default minimum width' do
-    control = Petui::Control::Label.new('Hello')
-
-    expect(control.min_width).to be_nil
-  end
-
   it 'can have a minimum width' do
     control = Petui::Control::Label.new('Hello')
-    control.min_width = 10
+    control.minimum_width = 10
 
-    expect(control.min_width).to eq(10)
+    expect(control.minimum_width).to eq(10)
   end
 
   it 'does not have a default maximum width' do
     control = Petui::Control::Label.new('Hello')
 
-    expect(control.max_width).to be_nil
+    expect(control.maximum_width).to be_nil
   end
 
   it 'can have a minimum width' do
     control = Petui::Control::Label.new('Hello')
-    control.max_width = 20
+    control.maximum_width = 20
 
-    expect(control.max_width).to eq(20)
+    expect(control.maximum_width).to eq(20)
   end
 
   describe '#render' do
@@ -77,57 +65,57 @@ RSpec.describe Petui::Control::Label do
     context 'when string is longer than width' do
       it 'renders text with spaces when text is shorter than the specified width' do
         control = Petui::Control::Label.new('Hello World')
-        control.width = 15
 
-        expect(control.render).to eq('Hello World    ')
+        expect(control.render(width: 15)).to eq('Hello World    ')
       end
 
       it 'can center text within the specified width' do
         control = Petui::Control::Label.new('Hello World')
-        control.width = 15
         control.align = Petui::Position::CENTER
 
-        expect(control.render).to eq('  Hello World  ')
+        expect(control.render(width: 15)).to eq('  Hello World  ')
       end
 
       it 'centers text towards the left when uneven spacing' do
         control = Petui::Control::Label.new('Hello World')
-        control.width = 16
         control.align = Petui::Position::CENTER
 
-        expect(control.render).to eq('  Hello World   ')
+        expect(control.render(width: 16)).to eq('  Hello World   ')
       end
 
       it 'can align text to the right within the specified width' do
         control = Petui::Control::Label.new('Hello World')
-        control.width = 15
         control.align = Petui::Position::RIGHT
 
-        expect(control.render).to eq('    Hello World')
+        expect(control.render(width: 15)).to eq('    Hello World')
       end
     end
 
     context 'when string is shorter than width' do
       it 'renders text with an ellipsis when text is longer than the specified width' do
         control = Petui::Control::Label.new('Hello World')
-        control.width = 8
 
-        expect(control.render).to eq('Hello W…')
+        expect(control.render(width: 8)).to eq('Hello W…')
       end
 
       it 'ignores alignment' do
         control = Petui::Control::Label.new('Hello World')
-        control.width = 6
         control.align = Petui::Position::RIGHT
 
-        expect(control.render).to eq('Hello…')
+        expect(control.render(width: 6)).to eq('Hello…')
       end
 
-      it 'raises an error if width is less than 2' do
+      it 'raises an error if width is less than the minimum' do
         control = Petui::Control::Label.new('Hello World')
-        control.width = 1
 
-        expect { control.render }.to raise_error('Width must be at least 2')
+        expect { control.render(width: 1) }.to raise_error('Width less than minimum.')
+      end
+
+      it 'raises an error if width is greater than the maximum' do
+        control = Petui::Control::Label.new('Hello World')
+        control.maximum_width = 20
+
+        expect { control.render(width: 21) }.to raise_error('Width greater than maximum.')
       end
     end
   end

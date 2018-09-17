@@ -5,36 +5,36 @@ module Petui
     class Label
       include Styleable
 
-      attr_accessor :preferred_width, :width, :minimum_width, :min_width, :max_width, :align
+      attr_accessor :preferred_width, :width, :minimum_width, :maximum_width, :align
       attr_reader :text
 
       def initialize(text)
         @text = text
-        @preferred_width = text.length
-        @width = preferred_width
         @minimum_width = 2
-        @min_width = nil
-        @max_width = nil
+        @preferred_width = text.length
+        @maximum_width = nil
         @align = Petui::Position::LEFT
       end
 
-      def render
+      def render(width: preferred_width)
+        raise 'Width less than minimum.' if width < minimum_width
+        raise 'Width greater than maximum.' if maximum_width && width > maximum_width
+
         output = if text.length > width
-                   render_short
+                   render_short(width: width)
                  else
-                   render_long
+                   render_long(width: width)
                  end
         style(output)
       end
 
       private
 
-      def render_short
-        raise "Width must be at least #{minimum_width}" if width - 2 < minimum_width
+      def render_short(width:)
         "#{text.slice(0..width - 2)}…"
       end
 
-      def render_long
+      def render_long(width:)
         case align
         when Petui::Position::LEFT
           text.ljust(width)
@@ -42,6 +42,8 @@ module Petui
           text.center(width)
         when Petui::Position::RIGHT
           text.rjust(width)
+        else
+          text
         end
       end
     end
