@@ -1,17 +1,28 @@
 # frozen_string_literal: true
 
 RSpec.describe Petui::Control::ProgressBar do
+  it 'has a preferred width' do
+    control = Petui::Control::ProgressBar.new
+
+    expect(control.preferred_width).to eq(10)
+  end
+
+  it 'has a minimum width' do
+    control = Petui::Control::ProgressBar.new
+    control.minimum_width = 20
+
+    expect(control.minimum_width).to eq(20)
+  end
+
   describe '#render' do
     it 'renders at the specified width' do
       control = Petui::Control::ProgressBar.new
-      control.width = 10
 
       expect(control.render).to eq('          ')
     end
 
     it 'renders 0% complete' do
       control = Petui::Control::ProgressBar.new
-      control.width = 10
       control.progress = 0
 
       expect(control.render).to eq('          ')

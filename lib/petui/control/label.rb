@@ -2,15 +2,17 @@
 
 module Petui
   module Control
-    class Label < Control
+    class Label
       include Styleable
 
-      attr_accessor :width, :min_width, :max_width, :align
+      attr_accessor :preferred_width, :width, :minimum_width, :min_width, :max_width, :align
       attr_reader :text
 
       def initialize(text)
         @text = text
-        @width = text.length
+        @preferred_width = text.length
+        @width = preferred_width
+        @minimum_width = 2
         @min_width = nil
         @max_width = nil
         @align = Petui::Position::LEFT
@@ -28,7 +30,7 @@ module Petui
       private
 
       def render_short
-        raise 'Width must be at least 2' if width - 2 < 2
+        raise "Width must be at least #{minimum_width}" if width - 2 < minimum_width
         "#{text.slice(0..width - 2)}…"
       end
 

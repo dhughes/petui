@@ -7,6 +7,19 @@ RSpec.describe Petui::Control::Label do
     expect(control.text).to eq('Hello World')
   end
 
+  it 'has a preferred width' do
+    control = Petui::Control::Label.new('Hello')
+
+    expect(control.preferred_width).to eq(5)
+  end
+
+  it 'has a minimum width' do
+    control = Petui::Control::Label.new('Hello')
+    control.minimum_width = 10
+
+    expect(control.minimum_width).to eq(10)
+  end
+
   it 'has a width' do
     control = Petui::Control::Label.new('Hello')
 
@@ -56,7 +69,7 @@ RSpec.describe Petui::Control::Label do
 
     it 'renders styles' do
       control = Petui::Control::Label.new('Hello')
-      control.styles = [:underline, :bold]
+      control.styles = %i[underline bold]
 
       expect(control.render).to eq("\e[4;1mHello\e[0m")
     end

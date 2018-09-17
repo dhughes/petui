@@ -2,7 +2,6 @@
 
 module Petui
   module Styleable
-
     attr_accessor :color, :background_color, :styles
 
     @color = nil
@@ -16,6 +15,5 @@ module Petui
     def styled?
       color || background_color || styles&.size
     end
-
   end
 end

@@ -4,13 +4,17 @@ require 'paint'
 
 module Petui
   module Control
-    class ProgressBar < Control
+    class ProgressBar
       include Styleable
 
-      attr_accessor :width, :progress
+      attr_accessor :preferred_width, :width, :minimum_width, :progress
+
+      PREFERRED_WIDTH = 10
 
       def initialize
-        @width = nil
+        @preferred_width = PREFERRED_WIDTH
+        @width = preferred_width
+        @minimum_width = width
         @progress = 0
       end
 
