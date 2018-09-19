@@ -3,7 +3,7 @@
 module Petui
   module Layout
     class HBox
-      attr_accessor :width, :children, :padding, :spacing
+      attr_accessor :width, :children, :padding, :spacing, :maximum_width
       attr_writer :preferred_width
 
       def initialize
@@ -17,6 +17,10 @@ module Petui
       def render(width: preferred_width)
         rendered_children = render_children(width: width)
         "#{padding_spaces}#{rendered_children.join(spacing_spaces)}#{padding_spaces}"
+      end
+
+      def minimum_width
+        minimum_children_widths.reduce(0, &:+) + (padding * 2) + (spacing * (children.size - 1))
       end
 
       def padding_spaces
@@ -35,7 +39,7 @@ module Petui
         extra_width = extra_width(width, adjusted_children_widths.values)
         return adjusted_children_widths if extra_width.zero?
         adjustable_children = adjustable_children(extra_width, adjusted_children_widths)
-
+        return adjusted_children_widths if adjustable_children.empty?
         amount_to_change = extra_width / adjustable_children.size
         return adjusted_children_widths if amount_to_change.zero?
 
@@ -75,32 +79,29 @@ module Petui
       end
 
       def spacing_width
-        spacing * (children.size - 1)
+        return 0 if children.empty?
+        spacing_width = spacing * (children.size - 1)
       end
 
       def preferred_children_widths
         children.map(&:preferred_width)
       end
 
+      def minimum_children_widths
+        children.map(&:minimum_width)
+      end
+
       def usable_width(width:)
         width - (padding * 2)
       end
 
-      # def preferred_width
-      #   preferred_contepreferred_content_widthnt_width > minimum_width ? preferred_content_width : minimum_width
-      # end
+      def preferred_width
+        preferred_width = preferred_content_width + (padding * 2)
+        return minimum_width if preferred_width < minimum_width
+        return maximum_width if maximum_width && preferred_width > maximum_width
+        preferred_width
+      end
 
-      # def minimum_width
-      #   children.reduce(0) do |minimum, child|
-      #     minimum + child.minimum_width
-      #   end
-      # end
-      #
-      # def preferred_width
-      #   return minimum_width if @preferred_width.nil? || minimum_width > @preferred_width
-      #   @preferred_width
-      # end
-      #
       # def preferred_widths
       #   children.reduce([]) do |widths, child|
       #     widths << child.preferred_width

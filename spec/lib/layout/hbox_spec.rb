@@ -3,6 +3,7 @@
 RSpec.describe Petui::Layout::HBox do
   it "calculates it's minimum width based on content minimum width" do
     box = Petui::Layout::HBox.new
+    box.spacing = 0
     label1 = Petui::Control::Label.new('Hello')
     label1.minimum_width = 6
     progress_bar = Petui::Control::ProgressBar.new
@@ -14,7 +15,13 @@ RSpec.describe Petui::Layout::HBox do
     expect(box.minimum_width).to eq(23)
   end
 
-  it 'has a preferred width' do
+  it 'has a preferred width (even when empty)' do
+    box = Petui::Layout::HBox.new
+
+    expect(box.preferred_width).to eq(0)
+  end
+
+  it 'has a user-providable preferred width' do
     box = Petui::Layout::HBox.new
     box.preferred_width = 50
 
@@ -30,7 +37,7 @@ RSpec.describe Petui::Layout::HBox do
 
     it 'renders at the specified width' do
       box = Petui::Layout::HBox.new
-
+      # TODO: need to calculate x offsets
       expect(box.render(width: 10)).to eq('          ')
     end
 
@@ -43,6 +50,7 @@ RSpec.describe Petui::Layout::HBox do
 
     it 'renders multiple children' do
       box = Petui::Layout::HBox.new
+      box.spacing = 0
       box.children << Petui::Control::Label.new('Hello')
       progress_bar = Petui::Control::ProgressBar.new
       progress_bar.progress = 0.5
@@ -54,6 +62,7 @@ RSpec.describe Petui::Layout::HBox do
 
     it 'scales children' do
       box = Petui::Layout::HBox.new
+      box.spacing = 0
       box.children << Petui::Control::Label.new('Hello')
       progress_bar = Petui::Control::ProgressBar.new
       progress_bar.progress = 0.5
@@ -65,6 +74,7 @@ RSpec.describe Petui::Layout::HBox do
 
     it 'scales children, taking in to consideration minimum widths' do
       box = Petui::Layout::HBox.new
+      box.spacing = 0
       label1 = Petui::Control::Label.new('Hello')
       label1.minimum_width = 6
       progress_bar = Petui::Control::ProgressBar.new
@@ -75,26 +85,6 @@ RSpec.describe Petui::Layout::HBox do
 
       expect(box.render(width: 17)).to eq('Hello ████    Wo…')
     end
-  end
-
-  it 'can get the min and preferred width of its children' do
-    box = Petui::Layout::HBox.new
-    label1 = Petui::Control::Label.new('Hello')
-    label1.minimum_width = 6
-    label1.preferred_width = 10
-    progress_bar = Petui::Control::ProgressBar.new
-    progress_bar.minimum_width = 15
-    progress_bar.progress = 0.5
-    label2 = Petui::Control::Label.new('World')
-    label2.minimum_width = 2
-    box.children = [label1, progress_bar, label2]
-
-    expect(box.preferred_widths).to eq([10, 15, 5])
-
-    # minimum_widths = result[0]
-    # preferred_widths = result[1]
-    # expect(minimum_widths).to eq([6, 15, 3])
-    # expect(preferred_widths).to eq([10, 15, 5])
   end
 
   it 'preferred_content_width' do

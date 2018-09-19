@@ -9,19 +9,19 @@ x `spacing width` - `spacing` * (number of children -1)
 `adjusted children widths` - the adjusted widths of children (hash mapping child to width)
 x `preferred children widths` - the preferred widths of children (hash mapping child to width)
 x `preferred content width` - the sum of the `preferred children widths` plus `spacing` between them
-`x offset` - space between the leftmost `usable width` and the content (0 when left aligned)
-`y offset` - space between the rightmost `usable width` and the content (0 when right aligned)
+`left offset` - space between the leftmost `usable width` and the content (0 when left aligned)
+`right offset` - space between the rightmost `usable width` and the content (0 when right aligned)
 
 `minimum children widths` - the minimum widths of children (hash mapping child to width)
 `maximum children widths` - the maximum widths of children (hash mapping child to width)
 
 
-|padding|x offset|content|y offset|padding
+|padding|left offset|content|right offset|padding
 
 
 # render
 
-* return padding, the x offset, the rendered children, the y offset, padding
+* return padding, the left offset, the rendered children, the right offset, padding
 
 # render children
 
@@ -34,7 +34,7 @@ Grows or shrinks `preferred children widths` based on the `extra width` availabl
 
 * clone `preferred children widths` as `adjusted widths`
 * loop while `extra width` is not 0 and there are `adjustable children` (based on `extra width`)
-	* find the the percent to change by dividing the `extra width` by the number of `adjustable children` (this may be negative)
+		* find the the percent to change by dividing the `extra width` by the number of `adjustable children` (this may be negative)
 	* iterate over the `adjustable children`
 		* multiply their current adjusted width by the resizing percent to get the amount to add to their width
 		* if the child's current adjusted width + the amount to add is less than their maximum width and greater than their minimum width, add it to the adjusted width
@@ -63,11 +63,11 @@ Grows or shrinks `preferred children widths` based on the `extra width` availabl
 
 * map the children to their preferred width
 
-# determine the y offset
+# determine the right offset
 
 * subtract `padding` * 2, `x offset`, and `content width` from `width`
 
-# determine the x offset
+# determine the left offset
 
 * if left aligned, return 0
 * if right aligned, return the `usable width` minus `content width` (IE: the adjusted children width)
