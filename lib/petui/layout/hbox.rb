@@ -23,6 +23,15 @@ module Petui
         minimum_children_widths.reduce(0, &:+) + (padding * 2) + (spacing * (children.size - 1))
       end
 
+      def preferred_width
+        preferred_width = preferred_content_width + (padding * 2)
+        return minimum_width if preferred_width < minimum_width
+        return maximum_width if maximum_width && preferred_width > maximum_width
+        preferred_width
+      end
+
+      private
+
       def padding_spaces
         ' ' * padding
       end
@@ -80,7 +89,7 @@ module Petui
 
       def spacing_width
         return 0 if children.empty?
-        spacing_width = spacing * (children.size - 1)
+        spacing * (children.size - 1)
       end
 
       def preferred_children_widths
@@ -94,43 +103,6 @@ module Petui
       def usable_width(width:)
         width - (padding * 2)
       end
-
-      def preferred_width
-        preferred_width = preferred_content_width + (padding * 2)
-        return minimum_width if preferred_width < minimum_width
-        return maximum_width if maximum_width && preferred_width > maximum_width
-        preferred_width
-      end
-
-      # def preferred_widths
-      #   children.reduce([]) do |widths, child|
-      #     widths << child.preferred_width
-      #   end
-      # end
-      #
-      # def adjusted_widths(width:)
-      #   content_width = preferred_widths.reduce(0, :+)
-      #   extra_width = width - content_width
-      #
-      # end
-
-      private
-
-      # def inflexible_width
-      #   children.select { |child| child.minimum_width > child.preferred_width }.
-      #     reduce(0) { |sum, child| sum + child.minimum_width }
-      # end
-
-      # def total_preferred_width
-      #   children.reduce(0) do |total, child|
-      #     width = child.preferred_width > child.minimum_width ? child.preferred_width : child.minimum_width
-      #     total + width
-      #   end
-      # end
-      #
-      # def scale(width)
-      #   total_preferred_width > width ? width / total_preferred_width.to_f : 1
-      # end
     end
   end
 end
