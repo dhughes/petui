@@ -7,6 +7,14 @@ RSpec.describe Petui::Control::ProgressBar do
     expect(control.preferred_width).to eq(10)
   end
 
+  it 'preferred width is at least the minimum width' do
+    control = Petui::Control::ProgressBar.new
+    control.preferred_width = 10
+    control.minimum_width = 20
+
+    expect(control.preferred_width).to eq(20)
+  end
+
   it 'has a minimum width' do
     control = Petui::Control::ProgressBar.new
     control.minimum_width = 20
@@ -73,7 +81,8 @@ RSpec.describe Petui::Control::ProgressBar do
 
     it 'raises an error if width is greater than the maximum' do
       control = Petui::Control::ProgressBar.new
-      
+      control.maximum_width = 20
+
       expect { control.render(width: 21) }.to raise_error('Width greater than maximum.')
     end
   end

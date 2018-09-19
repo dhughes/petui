@@ -13,6 +13,14 @@ RSpec.describe Petui::Control::Label do
     expect(control.preferred_width).to eq(5)
   end
 
+  it 'preferred width is at least the minimum width' do
+    control = Petui::Control::Label.new('Hello')
+    control.preferred_width = 10
+    control.minimum_width = 20
+
+    expect(control.preferred_width).to eq(20)
+  end
+
   it 'has a minimum width' do
     control = Petui::Control::Label.new('Hello')
     control.minimum_width = 10

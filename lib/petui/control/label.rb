@@ -5,8 +5,9 @@ module Petui
     class Label
       include Styleable
 
-      attr_accessor :preferred_width, :width, :minimum_width, :maximum_width, :align
+      attr_accessor :width, :minimum_width, :maximum_width, :align
       attr_reader :text
+      attr_writer :preferred_width
 
       def initialize(text)
         @text = text
@@ -26,6 +27,10 @@ module Petui
                    render_long(width: width)
                  end
         style(output)
+      end
+
+      def preferred_width
+        @preferred_width > minimum_width ? @preferred_width : minimum_width
       end
 
       private

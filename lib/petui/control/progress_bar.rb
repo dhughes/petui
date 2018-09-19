@@ -7,7 +7,8 @@ module Petui
     class ProgressBar
       include Styleable
 
-      attr_accessor :width, :minimum_width, :preferred_width, :maximum_width, :progress
+      attr_accessor :width, :minimum_width, :maximum_width, :progress
+      attr_writer :preferred_width
 
       PREFERRED_WIDTH = 10
 
@@ -19,10 +20,17 @@ module Petui
       end
 
       def render(width: preferred_width)
+        raise 'Width less than minimum.' if width < minimum_width
+        raise 'Width greater than maximum.' if maximum_width && width > maximum_width
+
         output = slices(width: width).each_slice(8).map { |block| block.count(1) }.reduce('') do |progress, block|
           progress + render_block(block)
         end
         style(output)
+      end
+
+      def preferred_width
+        @preferred_width > minimum_width ? @preferred_width : minimum_width
       end
 
       private
