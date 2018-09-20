@@ -3,34 +3,61 @@
 module Petui
   module Layout
     class HBox
-      attr_accessor :width, :children, :padding, :spacing, :maximum_width
-      attr_writer :preferred_width
+      attr_accessor :width, :children, :padding, :spacing, :maximum_width, :align
+      attr_writer :preferred_width, :minimum_width
 
       def initialize
+        @minimum_width = 0
         @preferred_width = nil
         @maximum_width = nil
         @padding = 0
         @spacing = 1
         @children = []
+        @align = Petui::Position::LEFT
       end
 
       def render(width: preferred_width)
         rendered_children = render_children(width: width)
-        "#{padding_spaces}#{rendered_children.join(spacing_spaces)}#{padding_spaces}"
+        left_spaces = left_offset_spaces(width)
+        right_spaces = right_offset_spaces(width)
+        "#{padding_spaces}#{left_spaces}#{rendered_children.join(spacing_spaces)}#{right_spaces}#{padding_spaces}"
       end
 
       def minimum_width
-        minimum_children_widths.reduce(0, &:+) + (padding * 2) + (spacing * (children.size - 1))
+        calculated_minimum = minimum_children_widths.reduce(0, &:+) + padding_width + spacing_width
+        calculated_minimum > @minimum_width ? calculated_minimum : @minimum_width
       end
 
       def preferred_width
-        preferred_width = preferred_content_width + (padding * 2)
-        return minimum_width if preferred_width < minimum_width
-        return maximum_width if maximum_width && preferred_width > maximum_width
-        preferred_width
+        return minimum_width if @preferred_width && @preferred_width < minimum_width
+        return maximum_width if @preferred_width && maximum_width && @preferred_width > maximum_width
+        @preferred_width || 0
       end
 
       private
+
+      def left_offset_spaces(width)
+        ' ' * left_offset(width)
+      end
+
+      def right_offset_spaces(width)
+        ' ' * right_offset(width)
+      end
+
+      def left_offset(width)
+        case align
+        when Petui::Position::CENTER
+          (usable_width(width: width) - content_width(width: width)) / 2
+        when Petui::Position::RIGHT
+          usable_width(width: width) - content_width(width: width)
+        else
+          0
+        end
+      end
+
+      def right_offset(width)
+        usable_width(width: width) - left_offset(width) - content_width(width: width)
+      end
 
       def padding_spaces
         ' ' * padding
@@ -83,6 +110,12 @@ module Petui
         width - adjusted_widths.reduce(0, &:+) - spacing_width
       end
 
+      def content_width(width:)
+        adjusted_children_widths(width: width).reduce(0) do |sum, (_, width)|
+          sum + width
+        end + spacing_width
+      end
+
       def preferred_content_width
         preferred_children_widths.reduce(0, &:+) + spacing_width
       end
@@ -101,7 +134,11 @@ module Petui
       end
 
       def usable_width(width:)
-        width - (padding * 2)
+        width - padding_width
+      end
+
+      def padding_width
+        padding * 2
       end
     end
   end

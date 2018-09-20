@@ -65,7 +65,7 @@ Grows or shrinks `preferred children widths` based on the `extra width` availabl
 
 # determine the right offset
 
-* subtract `padding` * 2, `x offset`, and `content width` from `width`
+* subtract `padding` * 2, `x offset`, and `content width` from `usable width`
 
 # determine the left offset
 
