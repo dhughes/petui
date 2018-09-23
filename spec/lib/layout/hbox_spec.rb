@@ -41,15 +41,8 @@ RSpec.describe Petui::Layout::HBox do
     expect(box.minimum_width).to eq(10)
   end
 
-  context 'when content wider than user-provided minimum width' do
-    it 'calculates minimum width as the minimum children widths' do
-
-    end
-  end
-
   describe '#render' do
     it 'renders' do
-      box = Petui::Layout::HBox.new
       box = Petui::Layout::HBox.new
       box.minimum_width = 5
       label = Petui::Control::Label.new('Hello World')
@@ -61,7 +54,7 @@ RSpec.describe Petui::Layout::HBox do
 
     it 'renders at the specified width' do
       box = Petui::Layout::HBox.new
-      # TODO: need to calculate x offsets
+
       expect(box.render(width: 10)).to eq('          ')
     end
 
@@ -155,147 +148,4 @@ RSpec.describe Petui::Layout::HBox do
       expect(box.render(width: 17)).to eq('Hello ████    Wo…')
     end
   end
-
-  # it 'preferred_content_width' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 2
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.preferred_width = 10
-  #   progress_bar = Petui::Control::ProgressBar.new
-  #   progress_bar.preferred_width = 12
-  #   label2 = Petui::Control::Label.new('World')
-  #   label2.minimum_width = 8
-  #   box.children = [label1, progress_bar, label2]
-  #
-  #   expect(box.preferred_content_width).to eq(34)
-  # end
-  #
-  # it 'preferred_children_widths' do
-  #   box = Petui::Layout::HBox.new
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.preferred_width = 10
-  #   progress_bar = Petui::Control::ProgressBar.new
-  #   progress_bar.preferred_width = 12
-  #   label2 = Petui::Control::Label.new('World')
-  #   label2.minimum_width = 8
-  #   box.children = [label1, progress_bar, label2]
-  #
-  #   expect(box.preferred_children_widths).to eq([10, 12, 8])
-  # end
-  #
-  # it 'usable_width' do
-  #   box = Petui::Layout::HBox.new
-  #   box.padding = 2
-  #
-  #   expect(box.usable_width(width: 10)).to eq(6)
-  # end
-  #
-  # it 'spacing width' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 2
-  #   box.children << Petui::Control::Label.new('Hello')
-  #   box.children << Petui::Control::Label.new('Hello')
-  #   box.children << Petui::Control::Label.new('Hello')
-  #   box.children << Petui::Control::Label.new('Hello')
-  #
-  #   expect(box.spacing_width).to eq(6)
-  # end
-  #
-  # it 'adjusted children widths - expands to fit equally' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 0
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.preferred_width = 10
-  #   label2 = Petui::Control::Label.new('World')
-  #   label2.preferred_width = 10
-  #   box.children = [label1, label2]
-  #
-  #   expect(box.adjusted_children_widths(width: 30)).to eq(
-  #     label1 => 15,
-  #     label2 => 15
-  #   )
-  # end
-  #
-  # it 'adjusted children widths - expands only those that can expand' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 0
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.maximum_width = 5
-  #   label2 = Petui::Control::Label.new('World')
-  #   box.children = [label1, label2]
-  #
-  #   expect(box.adjusted_children_widths(width: 30)).to eq(
-  #     label1 => 5,
-  #     label2 => 25
-  #   )
-  # end
-  #
-  # it 'adjusted children widths - expands only those that can expand' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 0
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.preferred_width = 5
-  #   label1.maximum_width = 7
-  #   label2 = Petui::Control::Label.new('World')
-  #   box.children = [label1, label2]
-  #
-  #   expect(box.adjusted_children_widths(width: 30)).to eq(
-  #     label1 => 7,
-  #     label2 => 23
-  #   )
-  # end
-  #
-  # it 'adjusted children widths - shrinks to fit equally' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 0
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.preferred_width = 10
-  #   label2 = Petui::Control::Label.new('World')
-  #   label2.preferred_width = 10
-  #   box.children = [label1, label2]
-  #
-  #   expect(box.adjusted_children_widths(width: 6)).to eq(
-  #     label1 => 3,
-  #     label2 => 3
-  #   )
-  # end
-  #
-  # it 'renders children' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 1
-  #   box.padding = 1
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.preferred_width = 7
-  #   label2 = Petui::Control::Label.new('World')
-  #   label2.preferred_width = 7
-  #   box.children = [label1, label2]
-  #
-  #   puts box.render(width: 17)
-  # end
-  #
-  # it 'renders weird children' do
-  #   box = Petui::Layout::HBox.new
-  #   box.spacing = 1
-  #   box.padding = 1
-  #   label1 = Petui::Control::Label.new('Hello')
-  #   label1.preferred_width = 7
-  #   label1.background_color = '#6666FF'
-  #   label1.color = :black
-  #   label1.align = Petui::Position::CENTER
-  #   label2 = Petui::Control::Label.new('World')
-  #   label2.preferred_width = 7
-  #   label2.styles = [:underline]
-  #   label2.align = Petui::Position::CENTER
-  #   box.children = [label1, label2]
-  #
-  #   puts "*#{box.render(width: 30)}*"
-  # end
-
-  # it 'extra width' do
-  #   box = Petui::Layout::HBox.new
-  #   box.padding = 2
-  #
-  #   width -
-  #   expect(box.extra_width(width: 15, children_width:  ))
-  # end
 end

@@ -73,8 +73,6 @@ Grows or shrinks `preferred children widths` based on the `extra width` availabl
 * if right aligned, return the `usable width` minus `content width` (IE: the adjusted children width)
 * if center aligned, return the `usable width` minus `content width` divided by two
 
-
-
 # find the minimum widths of children
 
 * map the children to their minimum width

@@ -1,0 +1,3 @@
+This is a
+wide string
+of text.
