@@ -5,18 +5,18 @@ module Petui
     class Text
       include Styleable
 
-      attr_accessor :width, :minimum_width, :maximum_width, :preferred_height, :scroll_top
+      attr_accessor :width, :minimum_width, :maximum_width, :minimum_height, :maximum_height, :scroll_top
       attr_reader :text
-      attr_writer :preferred_width
+      attr_writer :preferred_width, :preferred_height
 
       def initialize(text)
         @text = text
         @minimum_width = 2
         @preferred_width = text.length
         @maximum_width = nil
-
+        @minimum_height = 1
         @preferred_height = nil
-
+        @maximum_height = nil
         @scroll_top = 0
       end
 
@@ -24,16 +24,26 @@ module Petui
         @preferred_width > minimum_width ? @preferred_width : minimum_width
       end
 
-      def render(width: preferred_width, height: preferred_height)
-        output = wrapped_text(width)
-        output = take_lines(output, height) if height
-        output
+      def preferred_height
+        if @preferred_height.nil?
+          calculate_height(preferred_width)
+        else
+          @preferred_height > minimum_height ? @preferred_height : minimum_height
+        end
+      end
+
+      def render(width: preferred_width, height: calculate_height(width))
+        take_lines(wrapped_text(width), height)
       end
 
       private
 
-      def take_lines(text, to_line)
-        text.split("\n").drop(scroll_top).take(to_line).join("\n")
+      def calculate_height(width)
+        wrapped_text(width).split("\n").size
+      end
+
+      def take_lines(source_text, to_line)
+        source_text.split("\n").drop(scroll_top).take(to_line).join("\n")
       end
 
       def wrapped_text(width)

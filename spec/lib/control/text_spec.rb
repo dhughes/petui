@@ -56,7 +56,7 @@ RSpec.describe Petui::Control::Text do
     end
 
     it 'wraps text that is longer than the specified width' do
-      control = Petui::Control::Text.new('This is a wide string of text.')
+      control = Petui::Control::Text.new(samples.text_example)
 
       expect(control.render(width: 11)).to eq(samples.wrapped_text_example)
     end
@@ -93,14 +93,19 @@ RSpec.describe Petui::Control::Text do
 
   describe '#preferred_height' do
     context 'when preferred_width is not specified (IE: the length of the text)' do
-      it 'preferred height defaults to 1' do
-        pending
+      it 'preferred height defaults to the number of lines in the text' do
+        control = Petui::Control::Text.new(samples.lorem_ipsum)
+
+        expect(control.preferred_height).to eq(3)
       end
     end
 
     context 'when preferred_width is specified' do
       it 'calculates preferred height based on preferred width' do
-        pending
+        control = Petui::Control::Text.new(samples.lorem_ipsum)
+        control.preferred_width = 120
+
+        expect(control.preferred_height).to eq(13)
       end
     end
 
